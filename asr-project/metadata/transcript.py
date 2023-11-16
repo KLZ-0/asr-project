@@ -26,8 +26,8 @@ class Transcript:
 
     def __init__(self, fname: str, day: int, consultation_n: int, doctor: bool):
         self._fname = fname
-        self.day = int(day)
-        self.consultation_n = int(consultation_n)
+        self.day = day
+        self.consultation_n = consultation_n
         self.is_doctor = doctor
 
     @property
@@ -72,6 +72,8 @@ class Transcript:
     @classmethod
     def decode_path_name(cls, path_name: str) -> dict:
         tmp = dict(zip(cls.__path_re_keys, re.match(cls.__path_re, path_name).groups()))
+        tmp["day"] = int(tmp["day"])
+        tmp["consultation_n"] = int(tmp["consultation_n"])
         tmp["doctor"] = True if tmp["doctor"] == "doctor" else False
         return tmp
 
