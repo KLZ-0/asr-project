@@ -14,9 +14,6 @@ class Transcript:
     __path_re = re.compile(r"day(\d+)_consultation(\d+)_(\w+)")
     __path_re_keys = ["day", "consultation_n", "doctor"]
 
-    # NOTE: some marks contain only tags such as "<INAUDIBLE_SPEECH/>", not sure if we need to filter those
-    __valid_text_contains_re = re.compile(r"[a-z]")
-
     _fname: str
     _intervals: List[Interval]
 
@@ -42,23 +39,12 @@ class Transcript:
     def sid(self) -> str:
         return f"{self.day}:{self.consultation_n}:{int(self.is_doctor)}"
 
-    @classmethod
-    def is_text_ok(cls, text: str) -> bool:
-        # if not text:
-        #     return False
-
-        if not re.search(cls.__valid_text_contains_re, text):
-            return False
-
-        return True
-
     @intervals.setter
     def intervals(self, it: IntervalTier):
         if not isinstance(it, IntervalTier):
             raise TypeError(f"Setting intervals with {it.__class__} (IntervalTier required)")
 
-        self._intervals = [Interval.from_raw_interval(self, n + 1, i)
-                           for n, i in enumerate(it) if self.is_text_ok(i.mark)]
+        self._intervals = [Interval.from_raw_interval(self, n + 1, i) for n, i in enumerate(it)]
 
     @classmethod
     def from_file(cls, path: Path) -> "Transcript":

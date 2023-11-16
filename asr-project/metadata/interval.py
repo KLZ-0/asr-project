@@ -1,3 +1,4 @@
+import re
 from typing import TYPE_CHECKING
 
 from textgrid import Interval as ForeignInterval
@@ -17,6 +18,8 @@ class Interval:
     end_time: float
     text: str
 
+    __retmp = re.compile(r"(</?\w+/?>|[^a-z ])")
+
     def __str__(self):
         return f"Interval(tr_sid={self._transcript.sid}, n={self.n}, '{self.text}')"
 
@@ -27,7 +30,7 @@ class Interval:
         tmp.n = n
         tmp.start_time = interval.minTime
         tmp.end_time = interval.maxTime
-        tmp.text = interval.mark
+        tmp.text = re.sub(cls.__retmp, "", interval.mark.lower())
         return tmp
 
     @property

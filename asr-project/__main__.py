@@ -29,10 +29,16 @@ def main():
         "eval": intervals[n_train + n_test:]
     }
 
+    OUT_DIR = Path(".")
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
     for key, intrvls in dct.items():
-        with open("/tmp/" + key, "w") as f:
+        with (OUT_DIR / key).open("w") as f:
             for it in intrvls:
                 f.write(f"{it.sid}\t{it.text}\n")
+
+        with (OUT_DIR / key).with_suffix(".s").open("w") as f:
+            for it in intrvls:
+                f.write(f"<s> {it.text} </s>\n")
 
 
 if __name__ == '__main__':
