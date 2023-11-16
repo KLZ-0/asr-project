@@ -21,7 +21,7 @@ class Interval:
         return f"Interval(tr_sid={self._transcript.sid}, n={self.n}, '{self.text}')"
 
     @classmethod
-    def from_raw_interval(cls, _transcript: object, n: int, interval: ForeignInterval):
+    def from_raw_interval(cls, _transcript: object, n: int, interval: ForeignInterval) -> "Interval":
         tmp = cls()
         tmp._transcript = _transcript
         tmp.n = n

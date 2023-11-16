@@ -43,7 +43,7 @@ class Transcript:
         return f"{self.day}:{self.consultation_n}:{int(self.is_doctor)}"
 
     @classmethod
-    def is_text_ok(cls, text: str):
+    def is_text_ok(cls, text: str) -> bool:
         # if not text:
         #     return False
 
@@ -61,14 +61,14 @@ class Transcript:
                            for n, i in enumerate(it) if self.is_text_ok(i.mark)]
 
     @classmethod
-    def from_file(cls, path: Path):
+    def from_file(cls, path: Path) -> "Transcript":
         tmp = cls(fname=path.name, **cls.decode_path_name(path.stem))
         tmp.intervals = TextGrid.fromFile(path)[0]
 
         return tmp
 
     @classmethod
-    def from_dict(cls):
+    def from_dict(cls) -> "Transcript":
         # For future use when loading from a pre-processed file
         raise NotImplementedError()
 
