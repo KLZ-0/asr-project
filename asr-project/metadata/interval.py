@@ -1,4 +1,9 @@
+from typing import TYPE_CHECKING
+
 from textgrid import Interval as ForeignInterval
+
+if TYPE_CHECKING:
+    from metadata.transcript import Transcript
 
 
 class Interval:
@@ -6,7 +11,7 @@ class Interval:
     Represents one interval in a transcript file
     """
 
-    _transcript: object
+    _transcript: "Transcript"
     n: int
     start_time: float
     end_time: float

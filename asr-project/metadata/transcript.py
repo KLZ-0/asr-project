@@ -54,6 +54,9 @@ class Transcript:
 
     @intervals.setter
     def intervals(self, it: IntervalTier):
+        if not isinstance(it, IntervalTier):
+            raise TypeError(f"Setting intervals with {it.__class__} (IntervalTier required)")
+
         self._intervals = [Interval.from_raw_interval(self, n + 1, i)
                            for n, i in enumerate(it) if self.is_text_ok(i.mark)]
 
