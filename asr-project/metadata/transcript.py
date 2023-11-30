@@ -18,6 +18,7 @@ class Transcript:
     _path: Path
     _intervals: List[Interval]
     __a = Audio(sampling_rate=16000)
+    __cache = None
 
     day: int
     consultation_n: int
@@ -30,13 +31,25 @@ class Transcript:
         self.consultation_n = consultation_n
         self.is_doctor = doctor
 
+    def save(self):
+        for interv in self._intervals:
+            interv.save()
+
     @property
     def fname(self):
         return self._path.name
 
     @property
     def audio(self):
-        return self._audio
+        if self._audio is None:
+            return None
+
+        if self.__cache is None:
+            self.__cache = Dataset.from_dict({
+                "audio": [str(self._audio)]
+            }).cast_column("audio", Audio())[0]["audio"]["array"]
+
+        return self.__cache
 
     @property
     def intervals(self):
@@ -84,9 +97,7 @@ class Transcript:
         if not audio_path.exists():
             return None
 
-        return Dataset.from_dict({
-            "audio": [str(audio_path)]
-        }).cast_column("audio", Audio())
+        return audio_path
 
     def __str__(self):
         return f"Transcript(day={self.day}, n={self.consultation_n}, doc={self.is_doctor})"

@@ -16,6 +16,9 @@ class DataSet:
 
         for p in self._transcripts_path.glob("*.TextGrid"):
             self._transcripts.append(Transcript.from_file(p))
+            # tr = Transcript.from_file(p)
+            # tr.save()
+            # del tr
 
         # audio_dataset = Dataset.from_dict({
         #     "audio": [str(p) for p in self._audio_path.glob("*.wav")]

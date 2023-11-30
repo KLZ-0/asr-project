@@ -1,6 +1,8 @@
 import re
+from pathlib import Path
 from typing import TYPE_CHECKING
 
+import soundfile
 from textgrid import Interval as ForeignInterval
 
 if TYPE_CHECKING:
@@ -31,8 +33,8 @@ class Interval:
         tmp.start_time = interval.minTime
         tmp.end_time = interval.maxTime
         tmp.text = re.sub(cls.__retmp, "", interval.mark.lower())
-        if transcript.audio:
-            tmp.audio = transcript.audio[0]["audio"]["array"][int(tmp.start_time * 16000):int(tmp.end_time * 16000)]
+        # if transcript.audio:
+        #     tmp.audio = transcript.audio[0]["audio"]["array"][int(tmp.start_time * 16000):int(tmp.end_time * 16000)]
         return tmp
 
     @property
@@ -40,3 +42,14 @@ class Interval:
         tr = self._transcript
         # return f"{tr.sid}:{self.n}"
         return f"{tr.sid}:{self.start_time}:{self.end_time}"
+
+    def save(self, path: Path) -> (Path, str):
+        if self._transcript.audio is None:
+            return Path(), ""
+
+        newname = (path / self._transcript.fname)
+        newname = newname.with_stem(f"{newname.stem}_{self.n}").with_suffix(".wav")
+
+        audio = self._transcript.audio[int(self.start_time * 16000):int(self.end_time * 16000)]
+        soundfile.write(newname, audio, samplerate=16000)
+        return newname, self.text

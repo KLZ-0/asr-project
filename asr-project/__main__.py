@@ -1,4 +1,7 @@
 import random
+import shutil
+import tarfile
+import tempfile
 from pathlib import Path
 
 from metadata import DataSet
@@ -29,8 +32,26 @@ def main():
         "eval": intervals[n_train + n_test:]
     }
 
-    # OUT_DIR = Path("/tmp")
-    # OUT_DIR.mkdir(parents=True, exist_ok=True)
+    lines = []
+    OUT_DIR = Path(".")
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    DATA_DIR = OUT_DIR / "data"
+    if DATA_DIR.exists():
+        shutil.rmtree(DATA_DIR)
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    tars = {k: tarfile.open((DATA_DIR / k).with_suffix(".tar.gz"), "w:gz") for k, i in dct.items()}
+    md = (DATA_DIR / "metadata.csv").open("w")
+    for key, intrvls in dct.items():
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            for it in intrvls:
+                name, text = it.save(Path(tmp_dir))
+                if not text:
+                    continue
+                md.write(f"{name.name},{text}\n")
+                tars[key].add(name, arcname=name.name)
+
+    md.close()
+    [v.close() for v in tars.values()]
     # for key, intrvls in dct.items():
     #     with (OUT_DIR / key).open("w") as f:
     #         for it in intrvls:
