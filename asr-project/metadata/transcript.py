@@ -5,7 +5,7 @@ from typing import List
 from datasets import Audio, Dataset
 from textgrid import TextGrid, IntervalTier
 
-from metadata import Interval
+from .interval import Interval
 
 
 class Transcript:

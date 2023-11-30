@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List
 
-from metadata.transcript import Transcript
+from .transcript import Transcript
 
 
 class DataSet:

@@ -6,7 +6,7 @@ import soundfile
 from textgrid import Interval as ForeignInterval
 
 if TYPE_CHECKING:
-    from metadata.transcript import Transcript
+    from .transcript import Transcript
 
 
 class Interval:

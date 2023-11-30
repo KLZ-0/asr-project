@@ -20,6 +20,10 @@ def main():
         print(HELP.strip())
         exit()
 
+    if sys.argv[1] == "test":
+        metadata.test()
+        exit()
+
     ds = DataSet(Path("./primock57"))  # give the primock57 path
     intervals = []
     for tr in ds.transcripts:

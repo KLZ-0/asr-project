@@ -4,9 +4,10 @@ import tempfile
 from pathlib import Path
 from typing import Dict, List
 
+from datasets import load_dataset
 from rich.progress import track
 
-from metadata import Interval
+from . import Interval
 
 
 def generate(dct: Dict[str, List[Interval]], out_dir: Path = Path(".")):
@@ -16,9 +17,10 @@ def generate(dct: Dict[str, List[Interval]], out_dir: Path = Path(".")):
         shutil.rmtree(DATA_DIR)
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     tars = {k: tarfile.open((DATA_DIR / k).with_suffix(".tar.gz"), "w:gz") for k, i in dct.items()}
-    md = (DATA_DIR / "metadata.csv").open("w")
     for key, intrvls in dct.items():
         with tempfile.TemporaryDirectory() as tmp_dir:
+            md = (Path(tmp_dir) / "metadata.csv").open("w")
+            md.write("file_name,text\n")
             for it in track(intrvls, description=f"Processing {key}:"):
                 name, text = it.save(Path(tmp_dir))
                 if not text:
@@ -26,7 +28,8 @@ def generate(dct: Dict[str, List[Interval]], out_dir: Path = Path(".")):
                 md.write(f"{name.name},{text}\n")
                 tars[key].add(name, arcname=name.name)
 
-    md.close()
+            md.close()
+            tars[key].add((Path(tmp_dir) / "metadata.csv"), arcname="metadata.csv")
     [v.close() for v in tars.values()]
 
 
@@ -41,3 +44,13 @@ def sentences(dct: Dict[str, List[Interval]], out_dir: Path = Path(".")):
         with (out_dir / key).with_suffix(".s").open("w") as f:
             for it in intrvls:
                 f.write(f"<s> {it.text} </s>\n")
+
+
+def test(out_dir: Path = Path(".")):
+    DATA_DIR = out_dir / "data"
+    if not DATA_DIR.exists() or not DATA_DIR.is_dir():
+        raise NotADirectoryError(f"Data directory '{DATA_DIR}' is not a directory!")
+
+    dataset = load_dataset("audiofolder", data_dir=DATA_DIR)
+    print(dataset)
+    print(dataset["train"][2])
