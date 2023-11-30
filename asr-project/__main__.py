@@ -4,6 +4,8 @@ import tarfile
 import tempfile
 from pathlib import Path
 
+from rich.progress import track
+
 from metadata import DataSet
 
 random.seed(0)
@@ -43,7 +45,7 @@ def main():
     md = (DATA_DIR / "metadata.csv").open("w")
     for key, intrvls in dct.items():
         with tempfile.TemporaryDirectory() as tmp_dir:
-            for it in intrvls:
+            for it in track(intrvls, description=f"Processing {key}:"):
                 name, text = it.save(Path(tmp_dir))
                 if not text:
                     continue
