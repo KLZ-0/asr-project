@@ -12,6 +12,22 @@ class Transcript:
     """
     Represents one transcript file, which consists of individual intervals
     """
+
+    # we can remove the tags
+    # build background models, interpolation and n-grams -> consider 1 to 4 gram mdoels
+    # fit audio to wav2vec2
+    # remove the tags and keep the silence in the dataset
+
+    # wav2vec2 is an acoustic model, what if we add an n-gram language model to the output of the wav2vec2
+    # wav2vec2 is the baseline - so no LM
+    # train background n-gram LM
+    # train target n-gram LM
+    # interpolate them (linear interpolation)
+    # put the script to validation data with both models interpolated, then use it to guide wav2vec2
+    # find the best perplexity
+
+    # for the BG model, use smoothing
+
     __path_re = re.compile(r"day(\d+)_consultation(\d+)_(\w+)")
     __path_re_keys = ["day", "consultation_n", "doctor"]
 

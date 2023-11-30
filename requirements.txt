@@ -2,3 +2,4 @@ textgrid
 soundfile
 librosa
 datasets
+rich
