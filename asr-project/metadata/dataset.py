@@ -12,8 +12,15 @@ class DataSet:
 
     def __init__(self, path: Path):
         self._transcripts_path = path / "transcripts"
+        self._audio_path = path / "audio"
+
         for p in self._transcripts_path.glob("*.TextGrid"):
             self._transcripts.append(Transcript.from_file(p))
+
+        # audio_dataset = Dataset.from_dict({
+        #     "audio": [str(p) for p in self._audio_path.glob("*.wav")]
+        # }).cast_column("audio", Audio())
+        # print(audio_dataset[0])
 
     @property
     def transcripts(self) -> List[Transcript]:

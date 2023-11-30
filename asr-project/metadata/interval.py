@@ -24,13 +24,15 @@ class Interval:
         return f"Interval(tr_sid={self._transcript.sid}, n={self.n}, '{self.text}')"
 
     @classmethod
-    def from_raw_interval(cls, _transcript: object, n: int, interval: ForeignInterval) -> "Interval":
+    def from_raw_interval(cls, transcript: "Transcript", n: int, interval: ForeignInterval) -> "Interval":
         tmp = cls()
-        tmp._transcript = _transcript
+        tmp._transcript = transcript
         tmp.n = n
         tmp.start_time = interval.minTime
         tmp.end_time = interval.maxTime
         tmp.text = re.sub(cls.__retmp, "", interval.mark.lower())
+        if transcript.audio:
+            tmp.audio = transcript.audio[0]["audio"]["array"][int(tmp.start_time * 16000):int(tmp.end_time * 16000)]
         return tmp
 
     @property
