@@ -12,15 +12,15 @@ from . import Interval
 
 def generate(dct: Dict[str, List[Interval]], out_dir: Path = Path(".")):
     out_dir.mkdir(parents=True, exist_ok=True)
-    DATA_DIR = out_dir / "data"
+    DATA_DIR = out_dir / "hf-primock57" / "data"
     if DATA_DIR.exists():
         shutil.rmtree(DATA_DIR)
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     tars = {k: tarfile.open((DATA_DIR / k).with_suffix(".tar.gz"), "w:gz") for k, i in dct.items()}
     for key, intrvls in dct.items():
         with tempfile.TemporaryDirectory() as tmp_dir:
-            md = (Path(tmp_dir) / "metadata.csv").open("w")
-            md.write("file_name,text\n")
+            md = (DATA_DIR / f"{key}.csv").open("w")
+            md.write("file_name,transcription\n")
             for it in track(intrvls, description=f"Processing {key}:"):
                 name, text = it.save(Path(tmp_dir))
                 if not text:
@@ -29,7 +29,7 @@ def generate(dct: Dict[str, List[Interval]], out_dir: Path = Path(".")):
                 tars[key].add(name, arcname=name.name)
 
             md.close()
-            tars[key].add((Path(tmp_dir) / "metadata.csv"), arcname="metadata.csv")
+            # tars[key].add((Path(tmp_dir) / "metadata.csv"), arcname="metadata.csv")
     [v.close() for v in tars.values()]
 
 
@@ -47,10 +47,10 @@ def sentences(dct: Dict[str, List[Interval]], out_dir: Path = Path(".")):
 
 
 def test(out_dir: Path = Path(".")):
-    DATA_DIR = out_dir / "data"
+    DATA_DIR = out_dir / "hf-primock57" / "data"
     if not DATA_DIR.exists() or not DATA_DIR.is_dir():
         raise NotADirectoryError(f"Data directory '{DATA_DIR}' is not a directory!")
 
-    dataset = load_dataset("audiofolder", data_dir=DATA_DIR)
+    dataset = load_dataset("hf-primock57")
     print(dataset)
     print(dataset["train"][2])
