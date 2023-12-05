@@ -3,3 +3,11 @@ soundfile
 librosa
 datasets
 rich
+torch
+kenlm
+pyctcdecode
+librosa
+jiwer
+evaluate
+transformers
+datasets

@@ -3,3 +3,7 @@
 /primock57/
 /hf-primock57/data
 /outputs
+__pycache__
+/models
+/vocab.json
+
