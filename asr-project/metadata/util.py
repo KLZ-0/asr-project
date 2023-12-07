@@ -23,7 +23,7 @@ def generate(dct: Dict[str, List[Interval]], out_dir: Path = Path(".")):
             md.write("file_name,transcription\n")
             for it in track(intrvls, description=f"Processing {key}:"):
                 name, text = it.save(Path(tmp_dir))
-                if name == Path():
+                if not text:
                     continue
                 md.write(f"{name.name},{text}\n")
                 tars[key].add(name, arcname=name.name)
